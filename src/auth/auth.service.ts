@@ -2,12 +2,14 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
+import { PrismaService } from 'prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
-  constructor() { }
+  constructor(private prisma: PrismaService) { }
 
-  async signup() {
+  async signup(dto: CreateAuthDto) {
+  const {email, password} = dto;
     return { message: 'signup was successful' }
   }
   async signin() {
