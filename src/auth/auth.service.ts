@@ -6,7 +6,7 @@ import { PrismaService } from 'prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { jwtSecret } from '../utils/constants'
-import { Response } from 'express';
+import { Request, Response } from 'express';
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService, private jwt: JwtService) { }
@@ -56,8 +56,9 @@ export class AuthService {
 
     return res.send({ message: 'Logged in Successfully' });
   }
-  async signout() {
-    return '';
+  async signout(req: Request, res: Response) {
+    res.clearCookie('token')
+    return res.send({ message: 'Logged Out Successfully' });
 
   }
 
