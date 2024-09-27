@@ -1,11 +1,12 @@
 /* eslint-disable prettier/prettier */
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { PrismaService } from 'prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { jwtSecret } from '../utils/constants'
+import { Response } from 'express';
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService, private jwt: JwtService) { }
@@ -28,7 +29,7 @@ export class AuthService {
     })
     return { message: 'signup was successful' }
   }
-  async signin(dto: CreateAuthDto) {
+  async signin(dto: CreateAuthDto, req: Request, res: Response) {
     const { email, password } = dto;
 
     const foundUser = await this.prisma.user.findUnique({ where: { email } })
@@ -42,7 +43,18 @@ export class AuthService {
     }
     // Sign JWT and Return it to the user 
     const token = await this.signToken({ id: foundUser.id, email: foundUser.email })
-    return { token };
+    if (!token) {
+      throw new ForbiddenException()
+    }
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      maxAge: 3600000,
+      sameSite: 'strict'
+    })
+
+    return res.send({ message: 'Logged in Successfully' });
   }
   async signout() {
     return '';

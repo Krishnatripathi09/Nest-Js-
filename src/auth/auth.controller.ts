@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete,Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
@@ -15,8 +15,8 @@ export class AuthController {
 
 
   @Post('signin')
-  signin(@Body() dto: CreateAuthDto) {
-    return this.authService.signin(dto);
+  signin(@Body() dto: CreateAuthDto, @Req() req, @Res() res){
+    return this.authService.signin(dto, req, res);
   }
 
 
