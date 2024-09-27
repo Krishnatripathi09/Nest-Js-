@@ -5,9 +5,10 @@ import { UpdateAuthDto } from './dto/update-auth.dto';
 import { PrismaService } from 'prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { jwtSecret } from '../utils/constants'
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService, private: jwt: JwtService) { }
+  constructor(private prisma: PrismaService, private jwt: JwtService) { }
 
   async signup(dto: CreateAuthDto) {
     const { email, password } = dto;
@@ -37,13 +38,11 @@ export class AuthService {
     const isMatch = await this.comparePasswords({ password, hash: foundUser.hashedPassword });
 
     if (!isMatch) {
-      throw new BadRequestException('Please enter Valid Email and Password')
+      throw new BadRequestException('Please enter Correct Password')
     }
     // Sign JWT and Return it to the user 
-
-
-
-    return '';
+    const token = await this.signToken({ id: foundUser.id, email: foundUser.email })
+    return { token };
   }
   async signout() {
     return '';
@@ -65,5 +64,9 @@ export class AuthService {
   async signToken(args: { id: string, email: string }) {
     const payload = args;
 
-    this.jwt.signAsync(payload, { secret:})
+    return this.jwt.signAsync(payload, {
+      secret: jwtSecret
+
+    })
   }
+}
