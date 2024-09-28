@@ -26,5 +26,6 @@ export class UsersService {
 
   async getUsers() {
     return await this.prisma.user.findMany({ select: { id: true, email: true } });
+    console.log("Pull request Test")
   }
 }
