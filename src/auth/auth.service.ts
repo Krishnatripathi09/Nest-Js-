@@ -50,8 +50,6 @@ export class AuthService {
     res.cookie('token', token, {
       httpOnly: true,
       secure: true,
-      maxAge: 3600000,
-      sameSite: 'strict'
     })
 
     return res.send({ message: 'Logged in Successfully' });
