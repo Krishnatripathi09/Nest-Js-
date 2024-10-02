@@ -14,6 +14,7 @@ export class AuthController {
     @Post('login')
     @UseGuards(LocalGuard)
     login(@Req() req: any) {
+        console.log("I am inside Login method in auth controller file after passing UseGuard.")
         return req.user;
     }
 

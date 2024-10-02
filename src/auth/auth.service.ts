@@ -22,12 +22,13 @@ export class AuthService {
 
     }
     validateUser({ username, password }: AuthpayloadDto) {
-
+        console.log("I am inside service method.")
         const findUser = fakeUsers.find((user) => user.username === username);
-
+        console.log("I have verified the username and its correct", findUser)
         if (!findUser) return null;
         if (password === findUser.password) {
             const { password, ...user } = findUser;
+            console.log("I have verified the password and that is correct so i am returning a signed JWT Token")
             return this.jwtService.sign(user)
         }
 
